@@ -1,0 +1,196 @@
+{% extends 'bases/base_global.html' %}
+{% load staticfiles %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    <div class="parallax-container valign-wrapper">
+        <div class="parallax">
+            <img src="{{ MEDIA_URL }}{{ SITE_COVER }}">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="center-align">
+                    <img src="{{ MEDIA_URL }}{{ SITE_ICON }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="center-align">
+                    <h1 class="white-text">{{ SITE_NAME }}</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="center-align">
+                    <h5 class="white-text">{{ SITE_SLOGAN }}</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="center-align">
+                    {% if SITE_SN_FACEBOOK %}<a href="{{ SITE_SN_FACEBOOK }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-facebook" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_TWITTER %}<a href="{{ SITE_SN_TWITTER }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-twitter" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_MEDIUM %}<a href="{{ SITE_SN_MEDIUM }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-medium" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_GITHUB %}<a href="{{ SITE_SN_GITHUB }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-github" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_LINKEDIN %}<a href="{{ SITE_SN_LINKEDIN }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-linkedin" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_YOUTUBE %}<a href="{{ SITE_SN_YOUTUBE }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-youtube" aria-hidden="true"></i></a>{% endif %}
+                    {% if SITE_SN_GOOGLE %}<a href="{{ SITE_SN_GOOGLE }}" class="waves-effect waves-blue btn-flat white-text"><i class="fa fa-google-plus" aria-hidden="true"></i></a>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+    {% for object in object_list %}
+    {% if forloop.counter0|divisibleby:2  %}
+        <div class="row">
+    {% endif %}
+            <div class="col m6 s12">
+                <div class="card post-header">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <a href="{% url 'posts:view' object.id %}"><img class="activator image-back" src="{{ MEDIA_URL }}{{ object.cover_image }}"></a>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title activator grey-text text-darken-4"><a href="{% url 'posts:view' object.id %}">{{ object.title }}</a><i class="material-icons right">expand_less</i></span>
+                        <div class="chip">
+                            <img class="circle" src="{{ MEDIA_URL }}{{ object.author.profile.image }}" alt="Author">
+                            <a href="{% url 'profiles:view' object.author.id %}">{{ object.author.username }}</a>
+                        </div>
+                    </div>
+                    <div class="card-reveal">
+                        <span class="card-title grey-text text-darken-4">{{ object.title }}<i class="material-icons right">expand_more</i></span>
+                        <p class="flow-text">{{ object.content|striptags|safe|truncatechars_html:100 }}<a href="{% url 'posts:view' object.id %}"> Ver más <i class="material-icons">arrow_forward</i></a></p>
+                    </div>
+                </div>
+            </div>
+    {% if forloop.counter|divisibleby:2 or forloop.last  %}
+        </div>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <div class="container">
+        <div class="divider"></div>
+    </div>
+    <div class="row"></div>
+    <div class="row"></div>
+    <div class="row">
+        <div class="col s12 grey darken-3">
+            <div class="container spacer">
+                <div class="row"></div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <i class="fa fa-th white-text f13em" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <a class="info" href="{% url 'posts:index' %}">View All Posts</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row center-align">
+        {% if categories|length == 1 %}
+            <div class="col m4 hide-on-small-only"></div>
+        {% elif categories|length == 2 %}
+            <div class="col m2 hide-on-small-only"></div>
+        {% endif %}
+        {% for category in categories %}
+            <div class="col m4 s12 center-align">
+                <div class="card category-header">
+                    <div class="card-image waves-effect waves-block waves-light center-align">
+                        <a href="{% url 'categories:view' category.id %}"><img src="{{ MEDIA_URL }}{{ category.cover }}" class="image-back"></a>
+                    </div>
+                    <div class="card-category-image">
+                        <a href="{% url 'categories:view' category.id %}"><img src="{{ MEDIA_URL }}{{ category.icon }}" class="circle responsive-img"></a>
+                    </div>
+                    <div class="card-content">
+                        <div class="row">
+                            <a href="{% url 'categories:view' category.id %}"><p class="flow-text">{{ category.name }}</p></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="container">
+        <div class="divider"></div>
+    </div>
+    <div class="row"></div>
+    <div class="row"></div>
+    <div class="row">
+        <div class="col s12 grey darken-3">
+            <div class="container spacer">
+                <div class="row"></div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <i class="fa fa-th-list white-text f13em" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <a class="info" href="{% url 'categories:index' %}">View All Categories</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col l6 offset-l3 m8 offset-m2 s10 offset-s1">
+                <h4 class="f100w">Search</h4>
+                <form action="{% url 'settings:search' %}" method="get" id="search-form">
+                    <div class="input-field">
+                        <input id="search" type="search" name="search_string" required>
+                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                        <i class="material-icons" id="send">arrow_forward</i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.parallax').parallax();
+            img_responsive();
+            $('#send').on('click', function () {
+                $('#search-form').submit();
+            })
+        });
+
+        $(window).on('resize', img_responsive);
+
+        function img_responsive() {
+            var img = $('.image-back');
+            img.each(function() {
+
+                var prnt = $(this).parents('.card-image');
+
+                var prntW = prnt.width();
+                var prntH = prnt.height();
+                var imgW = $(this).width();
+                var imgH = $(this).height();
+
+                var proportion = (prntW * imgH) / imgW;
+
+                if (proportion <= prntH) {
+                    $(this).height('100%');
+                    $(this).width('auto');
+                    var diffval = ($(this).width() - prntW) / 2;
+                    $(this).css('transform', 'translate(-' + diffval + 'px, 0)');
+                } else {
+                    $(this).width('100%');
+                    $(this).height('auto');
+                    var diffval = ($(this).height() - prntH) / 2;
+                    $(this).css('transform', 'translate(0, -' + diffval + 'px)');
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

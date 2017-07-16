@@ -1,0 +1,118 @@
+{% extends 'bases/base_global.html' %}
+{% load staticfiles %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+
+    <div class="slider">
+        <ul class="slides">
+    {% for key, value in object.items %}
+        <li>
+            <a href="{% url 'categories:view' key.id %}">
+                <img src="{{ MEDIA_URL }}{{ key.cover }}" class="slider-image">
+                <div class="caption center-align">
+                    <h1>{{ key.name }}</h1>
+                    <h5>{{ key.description }}</h5>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
+        </ul>
+    </div>
+
+    {% for key, value in object.items %}
+    <div class="row {% ifchanged %}{% cycle "white" "grey darken-3" %}{% endifchanged %}">
+        <div class="container">
+            <div class="row"></div>
+            <a href="{% url 'categories:view' key.id %}"><h3 class="center-align {% ifchanged %}{% cycle "black-text" "white-text" %}{% endifchanged %}">{{ key.name }}</h3></a>
+                <a href="{% url 'categories:view' key.id %}"><h5 class="center-align {% ifchanged %}{% cycle "black-text" "white-text" %}{% endifchanged %}">{{ key.description }}</h5></a>
+            <div class="container spacer">
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <a href="{% url 'categories:view' key.id %}"><i class="fa fa-th {% ifchanged %}{% cycle "grey-text text-darken-3" "white-text" %}{% endifchanged %} f13em" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <a class="info {% ifchanged %}{% cycle "grey-text text-darken-3" "white-text" %}{% endifchanged %}" href="{% url 'categories:view' key.id %}">View Category</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12">
+                <div class="row">
+                {% if value|length == 1 %}
+                    <div class="col l4 hide-on-med-and-down"></div>
+                {% elif value|length == 2 %}
+                    <div class="col l2 hide-on-med-and-down"></div>
+                {% endif %}
+                {% for post in value %}
+                    <div class="col l4 m8 offset-m2 s12">
+                        <div class="card post-header">
+                            <div class="card-image waves-effect waves-block waves-light">
+                                <a href="{% url 'posts:view' post.id %}"><img class="activator image-back" src="{{ MEDIA_URL }}{{ post.cover_image }}"></a>
+                            </div>
+                            <div class="card-content">
+                                <span class="card-title activator grey-text text-darken-4"><a href="{% url 'posts:view' post.id %}">{{ post.title }}</a><i class="material-icons right">expand_less</i></span>
+                                <div class="chip">
+                                    <img class="circle" src="{{ MEDIA_URL }}{{ post.author.profile.image }}" alt="Author">
+                                    <a href="{% url 'profiles:view' post.author.id %}">{{ post.author.username }}</a>
+                                </div>
+                            </div>
+                            <div class="card-reveal">
+                                <span class="card-title grey-text text-darken-4">{{ post.title }}<i class="material-icons right">expand_more</i></span>
+                                <p class="flow-text">{{ post.content|striptags|safe|truncatechars_html:100 }}<a href="{% url 'posts:view' post.id %}"> Ver más <i class="material-icons">arrow_forward</i></a></p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col s12">
+                        <p class="center-align flow-text {% if forloop.counter0|divisibleby:'2' %}black-text{% else %}white-text{% endif %}">No posts in this category</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.slider').slider({
+                height: 500,
+                interval: 2500
+            });
+            img_responsive()
+        });
+        $(window).on('resize', img_responsive);
+        function img_responsive() {
+            var img = $('.image-back');
+            img.each(function() {
+
+                var prnt = $(this).parents('.card-image');
+
+                var prntW = prnt.width();
+                var prntH = prnt.height();
+                var imgW = $(this).width();
+                var imgH = $(this).height();
+
+                var proportion = (prntW * imgH) / imgW;
+
+                if (proportion <= prntH) {
+                    $(this).height('100%');
+                    $(this).width('auto');
+                    var diffval = ($(this).width() - prntW) / 2;
+                    $(this).css('transform', 'translate(-' + diffval + 'px, 0)');
+                } else {
+                    $(this).width('100%');
+                    $(this).height('auto');
+                    var diffval = ($(this).height() - prntH) / 2;
+                    $(this).css('transform', 'translate(0, -' + diffval + 'px)');
+                }
+
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {% block extra_css %}{% endblock %}
+    <!--Fonts-->
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Bold.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Bold.woff2' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Light.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Light.woff2' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Medium.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Medium.woff2' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Regular.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Regular.woff2' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Thin.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/roboto/Roboto-Thin.woff2' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/FontAwesome.otf' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/fontawesome-webfont.eot' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/fontawesome-webfont.svg' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/fontawesome-webfont.ttf' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/fontawesome-webfont.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome/fontawesome-webfont.woff2' %}">
+    <!--Icons-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Meta-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - {{ SITE_NAME }}</title>
+</head>
+
+<body>
+{% with request.resolver_match.namespace as namespace %}
+<!-- Dropdown -->
+<ul id="dropdown-users" class="dropdown-content" data-constrainwidth="true">
+    <li><a href="{% url 'profiles:view_self' %}" class="blue-text"><i class="material-icons left">person</i>View</a></li>
+    <li><a href="{% url 'profiles:edit' %}" class="blue-text"><i class="material-icons left">edit</i>Edit</a></li>
+    <li class="divider"></li>
+    <li><a href="{% url 'posts:new' %}" class="green-text"><i class="material-icons left">add</i>New Post</a></li>
+    <li class="divider"></li>
+    <li><a href="{% url 'settings:logout' %}" class="red-text"><i class="material-icons left">exit_to_app</i>Log Out</a></li>
+</ul>
+<!-- End Dropdown -->
+<!-- Navbar -->
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper light-blue darken-4">
+            <a href="#" data-activates="mobile-demo" class="button-collapse hide-on-large-only"><i class="material-icons">menu</i></a>
+            <a href="{% url 'settings:index' %}" class="brand-logo" style="height: 80%; padding-left: 20px; padding-top: 10px">
+                <img src="{{ MEDIA_URL }}{{ SITE_ICON }}" style="height: 100%;">
+            </a>
+            <ul class="hide-on-med-and-down right" style="height: 100%">
+                <li class="{% ifequal namespace 'settings' %}active{% endifequal %}"><a href="{% url 'settings:index' %}"><i class="material-icons">home</i></a></li>
+                <li class="{% ifequal namespace 'posts' %}active{% endifequal %}"><a href="{% url 'posts:index' %}">Posts</a></li>
+                <li class="{% ifequal namespace 'categories' %}active{% endifequal %}"><a href="{% url 'categories:index' %}">Categories</a></li>
+                <li style="height: 100%; width: 150px">
+                    <a class="right-align" style="height: 100%; position:relative; padding-top: 10px">
+                        <img src="{{ MEDIA_URL }}{{ user.profile.image }}" class="circle" id="navbar-usr-img" style="height: 80%;">
+                        <i class="mdi-navigation-arrow-drop-down material-icons right">arrow_drop_down</i>
+                        <span class="dropdown-button" data-activates="dropdown-users" data-beloworigin="true"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!-- End Navbar -->
+<!-- Sidenav -->
+<ul id="mobile-demo" class="side-nav">
+    <li>
+        <div class="userView">
+            <div class="background light-blue darken-4">
+            </div>
+            <a><img class="circle" src="{{ MEDIA_URL }}{{ user.profile.image }}"></a>
+            <a><span class="white-text name">{{ user.username }}</span></a>
+            <a><span class="white-text email">{{ user.profile.name }}</span></a>
+        </div>
+    </li>
+    <li><a href="{% url 'profiles:view_self' %}" class="blue-text"><i class="material-icons left">person</i>View User</a></li>
+    <li><a href="{% url 'profiles:edit' %}" class="blue-text"><i class="material-icons left">edit</i>Edit User</a></li>
+    <li><a href="{% url 'settings:logout' %}" class="red-text"><i class="material-icons left">exit_to_app</i>Log Out</a></li>
+    <li class="divider"></li>
+    <li><a href="{% url 'posts:new' %}" class="green-text"><i class="material-icons left">add</i>New Post</a></li>
+    <li><a href="{% url 'categories:new' %}" class="green-text"><i class="material-icons left">add</i>New Category</a></li>
+    <li class="divider"></li>
+    <li class="{% ifequal namespace 'settings' %}active{% endifequal %}"><a href="{% url 'settings:index' %}"><i class="material-icons">home</i>Home</a></li>
+    <li class="{% ifequal namespace 'posts' %}active{% endifequal %}"><a href="{% url 'posts:index' %}"><i class="fa fa-th f13em" aria-hidden="true"></i>Posts</a></li>
+    <li class="{% ifequal namespace 'categories' %}active{% endifequal %}"><a href="{% url 'categories:index' %}"><i class="fa fa-th-list f13em" aria-hidden="true"></i>Categories</a></li>
+</ul>
+<!-- End Sidenav -->
+{% endwith %}
+
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer class="page-footer blue-grey darken-4">
+    <div class="footer-copyright">
+        <div class="container">
+            © {% now 'Y' %} PlasmaCMS
+            <a class="grey-text text-lighten-4 right" href="http://jpyamamoto.com">Developed by: Juan Pablo Yamamoto</a>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+<!-- Scripts Navbar/Sidenav -->
+<script type="text/javascript">
+    $(".dropdown-button").dropdown({
+        constrain_width: true,
+        hover: false,
+        belowOrigin: true
+    });
+    $('.button-collapse').sideNav({
+        edge: 'left',
+        closeOnClick: true,
+        draggable: true
+    });
+</script>
+<!-- End Scripts Navbar/Sidenav -->
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,135 @@
+{% extends 'bases/base_global.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row card-panel z-depth-3">
+            <div class="col s10 offset-s1">
+                <form action="{% url 'settings:search' %}" method="get" id="search-form">
+                    <div class="input-field">
+                        <input id="search" type="search" name="search_string" value="{{ request.GET.search_string }}" required>
+                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                        <i class="material-icons" id="send">arrow_forward</i>
+                    </div>
+                </form>
+            </div>
+            <div class="row"></div>
+            <div class="col s12">
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab col s4 active"><a href="#posts" class="blue-text">Posts</a></li>
+                            <li class="tab col s4"><a href="#categories" class="blue-text">Categories</a></li>
+                            <li class="tab col s4"><a href="#users" class="blue-text">Users</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" id="posts">
+                    <div class="col s12">
+                        {% for post in posts_list %}
+                            <div class="row valign-wrapper hide-on-small-only">
+                                <div class="col l2 offset-l1 m4 offset-m1 center-align">
+                                    <a href="{% url 'posts:view' post.id %}"><img src="{{ MEDIA_URL }}{{ post.cover_image }}" class="circle responsive-img list-search"></a>
+                                </div>
+                                <div class="col l8 m6">
+                                    <a href="{% url 'posts:view' post.id %}"><p class="flow-text">{{ post.title }}</p></a>
+                                    <div class="chip">
+                                        <img class="circle" src="{{ MEDIA_URL }}{{ post.author.profile.image }}">
+                                        <a href="{% url 'profiles:view' post.author.id %}">{{ post.author.username }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hide-on-med-and-up center-align">
+                                <div class="col s8 offset-s2">
+                                    <a href="{% url 'posts:view' post.id %}"><img src="{{ MEDIA_URL }}{{ post.cover_image }}" class="circle responsive-img list-search"></a>
+                                </div>
+                                <div class="col s1"></div>
+                                <div class="col s10 offset-s1 center-align">
+                                    <a href="{% url 'posts:view' post.id %}"><p class="flow-text">{{ post.title }}</p></a>
+                                    <div class="chip">
+                                        <img class="circle" src="{{ MEDIA_URL }}{{ post.author.profile.image }}">
+                                        <a href="{% url 'profiles:view' post.author.id %}">{{ post.author.username }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row"></div>
+                        {% empty %}
+                            <p class="flow-text center-align">No posts match this search.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row" id="categories">
+                    <div class="col s12">
+                        {% for category in categories_list %}
+                            <div class="row valign-wrapper hide-on-small-only">
+                                <div class="col l2 offset-l1 m4 offset-m1 center-align">
+                                    <a href="{% url 'categories:view' category.id %}"><img src="{{ MEDIA_URL }}{{ category.icon }}" class="circle list-search"></a>
+                                </div>
+                                <div class="col l8 m6">
+                                    <a href="{% url 'categories:view' category.id %}"><p class="flow-text">{{ category.name }}</p></a>
+                                    <a href="{% url 'categories:view' category.id %}"><p class="black-text">{{ category.description|truncatechars:'100' }}</p></a>
+                                </div>
+                            </div>
+                            <div class="row hide-on-med-and-up">
+                                <div class="col s8 offset-s2 center-align">
+                                    <a href="{% url 'categories:view' category.id %}"><img src="{{ MEDIA_URL }}{{ category.icon }}" class="circle list-search"></a>
+                                </div>
+                                <div class="col s1"></div>
+                                <div class="col s10 offset-s1 center-align">
+                                    <a href="{% url 'categories:view' category.id %}"><p class="flow-text">{{ category.name }}</p></a>
+                                    <a href="{% url 'categories:view' category.id %}"><p class="black-text">{{ category.description|truncatechars:'100' }}</p></a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row"></div>
+                        {% empty %}
+                            <p class="flow-text center-align">No categories match this search.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row" id="users">
+                    <div class="col s12">
+                        {% for user in users_list %}
+                            <div class="row valign-wrapper hide-on-small-only">
+                                <div class="col l2 offset-l1 m4 offset-m1 center-align">
+                                    <a href="{% url 'profiles:view' user.id %}"><img src="{{ MEDIA_URL }}{{ user.profile.image }}" class="circle list-search"></a>
+                                </div>
+                                <div class="col l8 m6">
+                                    <a href="{% url 'profiles:view' user.id %}"><p class="flow-text">@{{ user.username }}</p></a>
+                                    <a href="{% url 'profiles:view' user.id %}"><p class="black-text">{{ user.profile.name }}</p></a>
+                                </div>
+                            </div>
+                            <div class="row hide-on-med-and-up">
+                                <div class="col s8 offset-s2 center-align">
+                                    <a href="{% url 'profiles:view' user.id %}"><img src="{{ MEDIA_URL }}{{ user.profile.image }}" class="circle list-search"></a>
+                                </div>
+                                <div class="col s1"></div>
+                                <div class="col s10 offset-s1 center-align">
+                                    <a href="{% url 'profiles:view' user.id %}"><p class="flow-text">@{{ user.username }}</p></a>
+                                    <a href="{% url 'profiles:view' user.id %}"><p class="black-text">{{ user.profile.name }}</p></a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row"></div>
+                        {% empty %}
+                            <p class="flow-text center-align">No users match this search.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        $('ul.tabs').tabs();
+        $('#send').on('click', function () {
+            $('#search-form').submit();
+        })
+    </script>
+{% endblock %}

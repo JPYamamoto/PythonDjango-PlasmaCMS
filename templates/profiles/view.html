@@ -1,0 +1,146 @@
+{% extends 'bases/base_global.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+
+    <div class="row"></div>
+    <div class="row">
+        <div class="col l3 offset-l1 s10 offset-s1 card-panel">
+            <div class="row"></div>
+            <div class="row">
+                <div class="col s8 offset-s2 center-align">
+                    {% if user.profile.image|file_exists and user.profile.image %}
+                        <img class="responsive-img circle" src="{{ MEDIA_URL }}{{ user.profile.image }}" style="max-height: 50vh">
+                    {% else %}
+                        <i class="material-icons f8em blue-grey-text text-darken-3">person_pin</i>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s10 offset-s1 center-align">
+                    <h5 class="flow-text f500w"><i class="fa fa-at prefix" aria-hidden="true"></i>{{ user.username }}</h5>
+                    {% if user.profile.name %}<p class="grey-text">{{ user.profile.name }}</p>{% endif %}
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="row"></div>
+            <div class="row">
+                <div class="col s10 offset-s1 center-align">
+                    {% if user.profile.sn_facebook %}
+                        <a class="btn-floating icon-facebook btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_facebook }}">
+                            <i class="fa fa-facebook" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_twitter %}
+                        <a class="btn-floating icon-twitter btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_twitter }}">
+                            <i class="fa fa-twitter" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_google %}
+                        <a class="btn-floating icon-google btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_google }}">
+                            <i class="fa fa-google-plus" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_medium %}
+                        <a class="btn-floating icon-medium btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_medium }}">
+                            <i class="fa fa-medium" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_youtube %}
+                        <a class="btn-floating icon-youtube btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_youtube }}">
+                            <i class="fa fa-youtube" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_github %}
+                        <a class="btn-floating icon-github btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_github }}">
+                            <i class="fa fa-github" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if user.profile.sn_linkedin %}
+                        <a class="btn-floating icon-linkedin btn-large waves-effect waves-light icon-sn" href="{{ user.profile.sn_linkedin }}">
+                            <i class="fa fa-linkedin" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="row">
+                <div class="col s12 center-align">
+                    <p class="italic flow-text">
+                        {% if user.profile.job %}<i class="fa fa-briefcase f13em" aria-hidden="true"></i> {{ user.profile.job }}{% endif %}
+                    </p>
+                </div>
+                <div class="col s12 center-align">
+                    {% if user.profile.bio %}<p class="flow-text">{{ user.profile.bio|linebreaksbr }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col l6 offset-l1 s10 offset-s1">
+            {% for post in posts %}
+                {% if forloop.counter0|divisibleby:'2' %}
+                <div class="row">
+                {% endif %}
+                    <div class="col s12 m6 center-align">
+                        <div class="card post-header">
+                            <div class="card-image waves-effect waves-block waves-light">
+                                <a href="{% url 'posts:view' post.id %}"><img class="image-back" src="{{ MEDIA_URL }}{{ post.cover_image }}"></a>
+                            </div>
+                            <div class="card-content">
+                                <span class="card-title activator"><a href="{% url 'posts:view' post.id %}">{{ post.title }}</a></span>
+                                <h6 class="grey-text">{{ post.creation_datetime|date:'F d, Y' }}</h6>
+                                <h6 class="grey-text">Posted in: <a href="{% url 'categories:view' post.category.id %}">{{ post.category.name }}</a></h6>
+                            </div>
+                        </div>
+                    </div>
+                {% if forloop.counter|divisibleby:'2' %}
+                </div>
+                {% endif %}
+            {% empty %}
+                <div class="col s10 offset-s1 center-align card-panel">
+                    <h4>No Posts</h4>
+                </div>
+            {% endfor %}
+            </div>
+    </div>
+
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            img_responsive();
+        });
+
+        $(window).on('resize', img_responsive);
+
+        function img_responsive() {
+            var img = $('.image-back');
+            img.each(function() {
+
+                var prnt = $(this).parents('.card-image');
+
+                var prntW = prnt.width();
+                var prntH = prnt.height();
+                var imgW = $(this).width();
+                var imgH = $(this).height();
+
+                var proportion = (prntW * imgH) / imgW;
+
+                if (proportion <= prntH) {
+                    $(this).height('100%');
+                    $(this).width('auto');
+                    var diffval = ($(this).width() - prntW) / 2;
+                    $(this).css('transform', 'translate(-' + diffval + 'px, 0)');
+                } else {
+                    $(this).width('100%');
+                    $(this).height('auto');
+                    var diffval = ($(this).height() - prntH) / 2;
+                    $(this).css('transform', 'translate(0, -' + diffval + 'px)');
+                }
+
+            });
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'bases/base_global.html' %}
+{% load staticfiles %}
+
+{% block title %}Post{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/medium-editor.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/medium-editor-insert-plugin.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/medium-editor-insert-plugin-frontend.min.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    {% include 'includes/form-center-1col-enctype.html' with label='Save' %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'js/medium-editor.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/handlebars.runtime-v4.0.10.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-sortable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.iframe-transport.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.ui.widget.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.fileupload.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/medium-editor-insert-plugin.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('select').material_select();
+            var editor = new MediumEditor('#id_content', {
+                buttonLabels: false,
+                spellcheck: false,
+                targetBlank: true,
+                toolbar: {
+                    allowMultiParagraphSelection: true,
+                    buttons: ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'orderedlist',
+                              'unorderedlist', 'indent', 'outdent', 'justifyLeft', 'justifyCenter', 'justifyRight',
+                              'justifyFull', 'anchor', 'h3', 'h4', 'h5', 'h6', 'removeFormat', 'quote'],
+                    static: false
+                },
+                anchorPreview: {
+                    showOnEmptyLinks: false
+                },
+                placeholder: {
+                    text: 'Type your text here. You can also insert images or videos.',
+                    hideOnClick: false
+                },
+                anchor: {
+                    linkValidation: true,
+                    targetCheckbox: true
+                },
+                paste: {
+                    forcePlainText: true,
+                    cleanPastedHTML: true,
+                    cleanAttrs: ['dir'],
+                    cleanTags: ['script', 'meta', 'link', 'iframe', 'object']
+                }
+            });
+
+            $('#id_content').mediumInsert({
+                editor: editor
+            });
+            $( ".medium-editor-element" ).focus(function() {
+                $("label[for='id_content']").css('color', '#3f51b5')
+            });
+            $( ".medium-editor-element" ).focusout(function() {
+                $("label[for='id_content']").css('color', '#9e9e9e')
+            });
+
+            editor.subscribe('editableInput', function (event, editable) {
+                $('.materialize-textarea p').addClass('flow-text');
+                $('.materialize-textarea ul').addClass('flow-text browser-default');
+            });
+        });
+    </script>
+{% endblock %}

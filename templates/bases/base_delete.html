@@ -1,0 +1,49 @@
+{% extends 'bases/base_global.html' %}
+
+{% block title %}Remove {{ object }}{% endblock %}
+
+{% block content %}
+
+    <div class="valign-wrapper" style="min-height: 100vh; height: 100%;">
+        <div class="container">
+            <div class="row">
+                <div class="col m6 offset-m3 s10 offset-s1">
+                    <div class="card z-depth-5">
+                        <div class="card-content">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                {% if message %}
+                                    {% include 'includes/error-msg.html' with msg=message %}
+                                    <div class="row"></div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <ul class="browser-default">
+                                                {% for post in error_posts %}
+                                                    <li>{{ post.title|default_if_none:"Object" }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                <p class="flow-text">The following {% block category %}object{% endblock %} will be removed:</p>
+                                <p class="flow-text">{% block extra_msg %}{% endblock %}</p>
+                                <ul class="browser-default">
+                                    <li>{{ object }}</li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col s12 input-field left-align">
+                                        <button class="btn-large waves-effect waves-light red darken-4" type="submit" name="action" value="Confirm">Confirm
+                                            <i class="material-icons right">delete</i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

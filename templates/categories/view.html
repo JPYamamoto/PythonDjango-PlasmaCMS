@@ -1,0 +1,153 @@
+{% extends 'bases/base_global.html' %}
+
+{% block title %}Category - {{ object.name }}{% endblock %}
+
+{% block content %}
+
+    <div class="parallax-container valign-wrapper">
+        <div class="parallax ">
+            <img src="{{ MEDIA_URL }}{{ object.cover }}">
+        </div>
+        <div class="container">
+            <h1 class="white-text center-align">{{ object.name }}</h1>
+            <div class="col s12 center-align">
+                <img src="{{ MEDIA_URL }}{{ object.icon }}" class="category-icon">
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="row grey lighten-4">
+        <div class="col s12">
+            <div class="row"></div>
+            <div class="row">
+                <div class="col s6 right-align">
+                    <a class="btn-floating btn-large waves-effect waves-light green" href="{% url 'categories:edit' object.id %}"><i class="material-icons">edit</i></a>
+                </div>
+                <div class="col s6 left-align">
+                    <a class="btn-floating btn-large waves-effect waves-light red" href="{% url 'categories:delete' object.id %}"><i class="material-icons">close</i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="container">
+        <div class="row"></div>
+        <div class="row">
+            <div class="col s8 offset-s2 center-align">
+                {% if posts.has_other_pages %}
+                    <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li class="waves-effect"><a href="?page={{ posts.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a><i class="material-icons">chevron_left</i></a></li>
+                    {% endif %}
+                    {% for i in posts.paginator.page_range %}
+                        {% if posts.number == i %}
+                            <li class="active blue"><a>{{ i }}</a></li>
+                        {% else %}
+                            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if posts.has_next %}
+                        <li class="waves-effect"><a href="?page={{ posts.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a><i class="material-icons">chevron_right</i></a></li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row container">
+        {% for post in posts %}
+            <div class="col s12 m6 center-align">
+                <div class="card post-header">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <a href="{% url 'posts:view' post.id %}"><img class="image-back" src="{{ MEDIA_URL }}{{ post.cover_image }}"></a>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title activator"><a href="{% url 'posts:view' post.id %}">{{ post.title }}</a></span>
+                        <div class="chip">
+                            <img class="circle" src="{{ MEDIA_URL }}{{ post.author.profile.image }}" alt="Author">
+                            <a href="{% url 'profiles:view' post.author.id %}">{{ post.author.username }}</a>
+                        </div>
+                        <h6 class="grey-text">{{ post.creation_datetime|date:'F d, Y' }}</h6>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col s12">
+                <p class="center-align flow-text">No posts in this category</p>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col s8 offset-s2 center-align">
+                {% if posts.has_other_pages %}
+                    <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li class="waves-effect"><a href="?page={{ posts.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a><i class="material-icons">chevron_left</i></a></li>
+                    {% endif %}
+                    {% for i in posts.paginator.page_range %}
+                        {% if posts.number == i %}
+                            <li class="active blue"><a>{{ i }}</a></li>
+                        {% else %}
+                            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if posts.has_next %}
+                        <li class="waves-effect"><a href="?page={{ posts.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+                    {% else %}
+                        <li class="disabled"><a><i class="material-icons">chevron_right</i></a></li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.parallax').parallax();
+            img_responsive();
+        });
+
+        $(window).on('resize', img_responsive);
+
+        function img_responsive() {
+            var img = $('.image-back');
+            img.each(function() {
+
+                var prnt = $(this).parents('.card-image');
+
+                var prntW = prnt.width();
+                var prntH = prnt.height();
+                var imgW = $(this).width();
+                var imgH = $(this).height();
+
+                var proportion = (prntW * imgH) / imgW;
+
+                if (proportion <= prntH) {
+                    $(this).height('100%');
+                    $(this).width('auto');
+                    var diffval = ($(this).width() - prntW) / 2;
+                    $(this).css('transform', 'translate(-' + diffval + 'px, 0)');
+                } else {
+                    $(this).width('100%');
+                    $(this).height('auto');
+                    var diffval = ($(this).height() - prntH) / 2;
+                    $(this).css('transform', 'translate(0, -' + diffval + 'px)');
+                }
+
+            });
+        }
+    </script>
+
+{% endblock %}

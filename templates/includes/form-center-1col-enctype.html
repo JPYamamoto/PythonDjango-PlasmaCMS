@@ -1,0 +1,49 @@
+<div class="valign-wrapper" style="min-height: 100vh; height: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card z-depth-5">
+                    <div class="card-content">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {% if message %}
+                                {% include 'includes/error-msg.html' with msg=message %}
+                                <div class="row"></div>
+                            {% endif %}
+                            {% csrf_token %}
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    {% include 'includes/error-msg.html' with msg=field.errors %}
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                    {% ifequal field.field.widget.attrs.data 'image' %}
+                                        <div class="file-field input-field">
+                                            <div class="btn light-blue darken-4">
+                                                <span>{{ field.label }}</span>
+                                                {{ field }}
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text" placeholder="Upload an image">
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {{ field }}
+                                        <label class="{% for class in field.label_classes %}{{ class }} {% endfor %}" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                    {% endifequal %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row">
+                                <div class="col s10 offset-s1 input-field right-align">
+                                    <button class="btn-large waves-effect waves-light light-blue darken-4" type="submit" name="action">{{ label }}
+                                        <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

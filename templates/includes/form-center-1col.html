@@ -1,0 +1,41 @@
+<div class="valign-wrapper" style="min-height: 100vh; height: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col m6 offset-m3 s10 offset-s1">
+                <div class="card z-depth-5">
+                    <div class="card-content">
+                        <form action="" method="post">
+                            {% if message %}
+                                {% include 'includes/error-msg.html' with msg=message %}
+                                <div class="row"></div>
+                            {% endif %}
+                            {% if form.non_field_errors %}
+                                {% include 'includes/error-msg.html' with msg=form.non_field_errors.as_text %}
+                                <div class="row"></div>
+                            {% endif %}
+                            {% csrf_token %}
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    {% include 'includes/error-msg.html' with msg=field.errors %}
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        {{ field }}
+                                        <label class="{% for class in field.label_classes %}{{ class }} {% endfor %}" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row">
+                                <div class="col s10 offset-s1 input-field right-align">
+                                    <button class="btn-large waves-effect waves-light light-blue darken-4" type="submit" name="action">{{ label }}
+                                        <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

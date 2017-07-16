@@ -1,0 +1,118 @@
+{% extends 'bases/base_global.html' %}
+
+{% block title %}Posts{% endblock %}
+
+{% block content %}
+
+    <div class="slider">
+        <ul class="slides">
+    {% for post in slider %}
+        <li>
+            <a href="{% url 'posts:view' post.id %}">
+                <img src="{{ MEDIA_URL }}{{ post.cover_image }}" class="slider-image">
+                <div class="caption center-align">
+                    <h1 class="white-text">{{ post.title }}</h1>
+                    <div class="chip">
+                        <a href="{% url 'profiles:view' post.author.id %}"><img class="circle chip-image" src="{{ MEDIA_URL }}{{ post.author.profile.image }}" alt="Author"></a>
+                        <a href="{% url 'profiles:view' post.author.id %}">{{ post.author.username }}</a>
+                    </div>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
+        </ul>
+    </div>
+
+    <div id="posts-block">
+        {% include 'posts/index_page.html' with posts_list=posts %}
+    </div>
+    <div class="container spacer" id="more-button">
+        <div class="row center-align">
+            <a class="waves-effect waves-teal btn-flat black-text button-border" id="more-posts">
+                View More
+                <i class="material-icons left black-text">add</i>
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.slider').slider({
+                height: 500,
+                interval: 2500
+            });
+            img_responsive();
+            var page = 1;
+            $('#more-posts').on('click', function () {
+                page++;
+                more_posts(page);
+            })
+        });
+        $(window).on('resize', img_responsive);
+        function img_responsive() {
+            var img = $('.image-back');
+            img.each(function() {
+
+                var prnt = $(this).parents('.card-image');
+
+                var prntW = prnt.width();
+                var prntH = prnt.height();
+                var imgW = $(this).width();
+                var imgH = $(this).height();
+
+                var proportion = (prntW * imgH) / imgW;
+
+                if (proportion <= prntH) {
+                    $(this).height('100%');
+                    $(this).width('auto');
+                    var diffval = ($(this).width() - prntW) / 2;
+                    $(this).css('transform', 'translate(-' + diffval + 'px, 0)');
+                } else {
+                    $(this).width('100%');
+                    $(this).height('auto');
+                    var diffval = ($(this).height() - prntH) / 2;
+                    $(this).css('transform', 'translate(0, -' + diffval + 'px)');
+                }
+
+            });
+        }
+
+        function more_posts(page_num) {
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: {% url 'posts:index' %},
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken : csrftoken,
+                    page: page_num
+                },
+
+                success: function (response) {
+                    $('#posts-block').append(response.html);
+                    img_responsive();
+                    if (!response.more_pages) {
+                        $('#more-button').remove();
+                    }
+                }
+            })
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'bases/base_global.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ profile.user.username }}{% endblock %}
+
+{% block content %}
+
+    <div class="valign-wrapper" style="min-height: 100vh; height: 100%;">
+        <div class="container w90">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col m4 s10 offset-s1">
+                        <div class="card z-depth-5">
+                            <div class="card-content">
+                            {% if form.image.errors %}
+                                {% include 'includes/error-msg.html' with msg=form.image.errors %}
+                            {% endif %}
+                                <div class="row">
+                                    <div class="col s4 offset-s4 center-align">
+                                        {% if form.image.value|file_exists and form.image.value %}
+                                        <img class="responsive-img circle" src="{{ MEDIA_URL }}{{ form.image.value }}">
+                                        {% else %}
+                                        <i class="material-icons f5em blue-grey-text text-darken-3">person_pin</i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 file-field input-field">
+                                        <div class="btn light-blue darken-4">
+                                            <span>{{ form.image.label }}</span>
+                                            {{ form.image }}
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text" placeholder="Upload an image">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-facebook prefix" aria-hidden="true"></i>
+                                        {{ form.sn_facebook }}
+                                        <label class="{% if form.sn_facebook.errors %}invalid{% endif %}" for="{{ form.sn_facebook.auto_id }}" data-error="{{ form.sn_facebook.errors }}">{{ form.sn_facebook.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-twitter prefix" aria-hidden="true"></i>
+                                        {{ form.sn_twitter }}
+                                        <label class="{% if form.sn_twitter.errors %}invalid{% endif %}" for="{{ form.sn_twitter.auto_id }}" data-error="{{ form.sn_twitter.errors }}">{{ form.sn_twitter.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-google prefix" aria-hidden="true"></i>
+                                        {{ form.sn_google }}
+                                        <label class="{% if form.sn_google.errors %}invalid{% endif %}" for="{{ form.sn_google.auto_id }}" data-error="{{ form.sn_google.errors }}">{{ form.sn_google.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-medium prefix" aria-hidden="true"></i>
+                                        {{ form.sn_medium }}
+                                        <label class="{% if form.sn_medium.errors %}invalid{% endif %}" for="{{ form.sn_medium.auto_id }}" data-error="{{ form.sn_medium.errors }}">{{ form.sn_medium.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-youtube prefix" aria-hidden="true"></i>
+                                        {{ form.sn_youtube }}
+                                        <label class="{% if form.sn_youtube.errors %}invalid{% endif %}" for="{{ form.sn_youtube.auto_id }}" data-error="{{ form.sn_youtube.errors }}">{{ form.sn_youtube.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-github prefix" aria-hidden="true"></i>
+                                        {{ form.sn_github }}
+                                        <label class="{% if form.sn_github.errors %}invalid{% endif %}" for="{{ form.sn_github.auto_id }}" data-error="{{ form.sn_github.errors }}">{{ form.sn_github.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col l10 offset-l1 m12 s10 offset-s1 input-field">
+                                        <i class="fa fa-linkedin prefix" aria-hidden="true"></i>
+                                        {{ form.sn_linkedin }}
+                                        <label class="{% if form.sn_linkedin.errors %}invalid{% endif %}" for="{{ form.sn_linkedin.auto_id }}" data-error="{{ form.sn_linkedin.errors }}">{{ form.sn_linkedin.label }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col m8 s10 offset-s1">
+                        <div class="card z-depth-5">
+                            <div class="card-content">
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        <i class="fa fa-at prefix" aria-hidden="true"></i>
+                                        {{ form2.username }}
+                                        <label class="{% if form2.username.errors %}invalid{% endif %}" for="{{ form2.username.auto_id }}" data-error="{{ form2.username.errors }}">{{ form2.username.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        <i class="fa fa-user prefix" aria-hidden="true"></i>
+                                        {{ form.name }}
+                                        <label class="{% if form.name.errors %}invalid{% endif %}" for="{{ form.name.auto_id }}" data-error="{{ form.name.errors }}">{{ form.name.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        <i class="fa fa-envelope prefix" aria-hidden="true"></i>
+                                        {{ form2.email }}
+                                        <label class="{% if form2.email.errors %}invalid{% endif %}" for="{{ form2.email.auto_id }}" data-error="{{ form2.email.errors }}">{{ form2.email.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        <i class="fa fa-briefcase prefix" aria-hidden="true"></i>
+                                        {{ form.job }}
+                                        <label class="{% if form.job.errors %}invalid{% endif %}" for="{{ form.job.auto_id }}" data-error="{{ form.job.errors }}">{{ form.job.label }}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s10 offset-s1 input-field">
+                                        <i class="fa fa-id-card prefix" aria-hidden="true"></i>
+                                        {{ form.bio }}
+                                        <label class="{% if form.bio.errors %}invalid{% endif %}" for="{{ form.bio.auto_id }}" data-error="{{ form.bio.errors }}">{{ form.bio.label }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"></div>
+                        <div class="row">
+                            <div class="col s10 offset-s1">
+                                <div class="card z-depth-5">
+                                    <div class="container">
+                                        <div class="row"></div>
+                                        <div class="row">
+                                            <div class="col s10 offset-s1 center-align">
+                                                <button class="btn-large waves-effect waves-light light-blue darken-4" type="submit" name="action">Save
+                                                    <i class="material-icons right">save</i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s10 offset-s1">
+                                <div class="card z-depth-5">
+                                    <div class="container">
+                                        <div class="row"></div>
+                                        <div class="row">
+                                            <div class="col s6 center-align">
+                                                <div class="row">
+                                                    <a class="btn-floating waves-effect waves-light green darken-4 f05em" href="{# url 'profiles:change_pass' #}">
+                                                        <i class="material-icons">autorenew</i>
+                                                    </a>
+                                                </div>
+                                                <div class="row">
+                                                    <a class="green-text text-darken-4" href="{# url 'profiles:change_pass' #}">Change Password</a>
+                                                </div>
+                                            </div>
+                                            <div class="col s6 center-align">
+                                                <div class="row">
+                                                    <a class="btn-floating waves-effect waves-light red darken-4 f05em" href="{% url 'profiles:delete' profile.user_id %}">
+                                                        <i class="material-icons">delete_forever</i>
+                                                    </a>
+                                                </div>
+                                                <div class="row">
+                                                    <a class="red-text text-darken-4" href="{% url 'profiles:delete' profile.user_id %}">Remove Account</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.materialize-textarea').trigger('autoresize');
+        })
+    </script>
+{% endblock %}

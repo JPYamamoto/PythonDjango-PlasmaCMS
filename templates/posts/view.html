@@ -1,0 +1,218 @@
+{% extends 'bases/base_global.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/medium-editor-insert-plugin-frontend.min.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="parallax-container valign-wrapper">
+        <div class="parallax ">
+            <img src="{{ MEDIA_URL }}{{ post.cover_image }}">
+        </div>
+        <div class="container">
+            <h1 class="white-text center-align">{{ post.title }}</h1>
+        </div>
+    </div>
+    <div class="row grey lighten-4">
+        <div class="col s12">
+            <div class="row"></div>
+            {% if post.author == user %}
+            <div class="row">
+                <div class="col s6 right-align">
+                    <a class="btn-floating btn-large waves-effect waves-light green" href="{% url 'posts:edit' post.id %}"><i class="material-icons">edit</i></a>
+                </div>
+                <div class="col s6 left-align">
+                    <a class="btn-floating btn-large waves-effect waves-light red" href="{% url 'posts:delete' post.id %}"><i class="material-icons">close</i></a>
+                </div>
+            </div>
+            {% else %}
+            <div class="row center-align">
+                <div class="col s4 offset-s2 right-align">
+                    <a href="{% url 'profiles:view' post.author.id %}"><img class="circle profile-post-min" src="{{ MEDIA_URL }}{{ post.author.profile.image }}"></a>
+                </div>
+                <div class="col s6 left-align">
+                    <h6><a href="{% url 'profiles:view' post.author.id %}">@{{ post.author.username }}</a></h6>
+                    <h6 class="grey-text italic">{{ post.creation_datetime|date:'F d, Y' }}</h6>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col s10 offset-s1">
+                <h1 class="center-align">{{ post.title }}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col m8 offset-m2 s12" id="post-content">
+                {{ post.content|safe }}
+            </div>
+        </div>
+        <div class="divider"></div>
+    </div>
+    <div class="row"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col l6 offset-l3 m8 offset-m2 s10 offset-s1 card-panel">
+                <div class="row valign-wrapper">
+                    <div class="col s4 card-image">
+                        <a href="{% url 'profiles:view' post.author.id %}"><img class="circle profile-post image-back" src="{{ MEDIA_URL }}{{ post.author.profile.image }}"></a>
+                    </div>
+                    <div class="col s6">
+                        <div class="row">
+                            <a href="{% url 'profiles:view' post.author.id %}"><h5>{{ post.author.profile.name|default_if_none:post.author.username }}</h5></a>
+                            <h6 class="grey-text text-darken-2">{{ post.author.profile.job|default_if_none:"" }}</h6>
+                            <p class="center-align">
+                                {% if post.author.profile.sn_facebook %}<a href="{{ post.author.profile.sn_facebook }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-facebook grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_twitter %}<a href="{{ post.author.profile.sn_twitter }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-twitter grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_google %}<a href="{{ post.author.profile.sn_google }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-google grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_medium %}<a href="{{ post.author.profile.sn_medium }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-medium grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_youtube %}<a href="{{ post.author.profile.sn_youtube }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-youtube grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_github %}<a href="{{ post.author.profile.sn_github }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-github grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                                {% if post.author.profile.sn_linkedin %}<a href="{{ post.author.profile.sn_linkedin }}" class="btn-floating btn-flat waves-effect waves-light"><i class="fa fa-linkedin grey-text profile-post-icon" aria-hidden="true"></i></a>{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row"></div>
+    </div>
+    {% if form_comment %}
+    <div class="container">
+        {% if user.is_authenticated %}
+        <div class="row">
+            <div class="col m8 offset-m2 s10 offset-s1 card-panel z-depth-2">
+                <h5 class="center-align">Post a comment</h5>
+                <form action="" method="post" id="comments">
+                    {% csrf_token %}
+                    <div id="errors"></div>
+                    {% for field in form_comment %}
+                        <div class="col s10 offset-s1 input-field">
+                            {{ field }}
+                            <label class="{% for class in field.label_classes %}{{ class }} {% endfor %}" for="{{ field.auto_id }}">{{ field.label }}</label>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col s10 offset-s1 input-field right-align">
+                            <button class="btn waves-effect waves-light light-blue darken-4" type="submit" name="action">Post
+                                <i class="material-icons right">comment</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col l6 offset-l3 m8 offset-m2 s10 offset-s1" id="comments-block">
+                {% for comment in comments %}
+                    <div class="row">
+                        <div class="col s12 card-panel z-depth-2">
+                            <div class="row"></div>
+                            <div class="row">
+                                <div class="col s9 offset-s1">
+                                    <img class="circle comment-user left" src="{{ MEDIA_URL }}{{ comment.user.profile.image }}">
+                                    <a href="{% url 'profiles:view' comment.user.id %}"><h6>@{{ comment.user.username }}</h6></a>
+                                    <h6>{{ comment.creation_datetime|date:'F d, Y' }}</h6>
+                                </div>
+                                <div class="col s1">
+                                    {% if comment.user == user %}
+                                    <a class="btn-floating waves-effect waves-light red right remove-comment"><i class="material-icons">close</i></a>
+                                    {% endif %}
+                                </div>
+                                <div class="col s1"></div>
+                                <div class="col s10 offset-s1 divider"></div>
+                                <div class="col s10 offset-s1">
+                                    <h5>{{ comment.title }}</h5>
+                                    <p class="flow-text">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.parallax').parallax();
+            $('#post-content ul').addClass('flow-text browser-default');
+            $('#post-content p').addClass('flow-text');
+        });
+    </script>
+    {% if user.is_authenticated %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#comments').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: $(this).serialize(),
+
+                    success: function (json) {
+                        if (json.success === true){
+                            var new_id = "new_comment" + json.response.comment_id;
+                            var success_dom = '<div class="row" id="' + new_id + '" style="opacity: 0"> \
+                                <div class="col s12 card-panel z-depth-2"> \
+                                    <div class="row"></div> \
+                                    <div class="row"> \
+                                        <div class="col s9 offset-s1"> \
+                                            <img class="circle comment-user left" src="' + json.response.user_image + '"> \
+                                            <a href="{' + json.response.user_id + '"><h6>@' + json.response.user_name + '</h6></a> \
+                                            <h6>' + json.response.date + '</h6> \
+                                        </div> \
+                                        <div class="col s1"> \
+                                            <a class="btn-floating waves-effect waves-light red right remove-comment"><i class="material-icons">close</i></a> \
+                                        </div> \
+                                        <div class="col s1"></div> \
+                                        <div class="col s10 offset-s1 divider"></div> \
+                                        <div class="col s10 offset-s1"> \
+                                            <h5>' + json.response.title + '</h5> \
+                                            <p class="flow-text">' + json.response.content + '</p> \
+                                        </div> \
+                                    </div> \
+                                </div> \
+                            </div>';
+                            $('#comments-block').prepend(success_dom);
+                            $(":input:not([type=hidden])").val("");
+                            Materialize.fadeInImage('#' + new_id)
+                        } else {
+                            var error_messages = '';
+                            json.response.each(function (index, value) {
+                                error_messages += '<p>' + index + ': ' + value + '</p>';
+                            });
+                            var error_dom = '<table> \
+                                <tbody class="errormsg card-panel red"> \
+                                    <td class="red msg-icon"> \
+                                        <p class="center-align white-text"><i class="material-icons small">error_outline</i></p> \
+                                    </td> \
+                                    <td class="white">' + error_messages + ' \
+                                    </td> \
+                                </tbody> \
+                            </table>';
+                            $('#errors').prepend(error_dom);
+                        }
+                    }
+                })
+            })
+        });
+
+    </script>
+    {% endif %}
+
+{% endblock %}
